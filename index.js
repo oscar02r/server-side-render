@@ -58,7 +58,19 @@ app.post('/auth/sign-up', async function(req, res, next){
 });
 
 app.get('/movies', async function(req, res, next){
-     
+  
+        const {token} = req.cookies;
+        const {data , status} = await axios({
+          url:`${config.apiUrl}/api/movies`,
+          method:'get',
+          headers:{Authorization:`Bearer ${token}`},
+        });
+        
+        if(!data || status !==200 ){
+           next(boom.badImplementation('Bad implemation'));
+        }
+
+        res.status(200).json(data);
 });
 
 app.post("/user-movies", async function(req, res, next) {
