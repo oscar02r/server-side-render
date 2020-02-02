@@ -31,7 +31,8 @@ app.post("/auth/sign-in", async function(req, res, next) {
         }
 
         const { token, ...user } = data;
-
+        // Si el atributo rememberMe es verdadero la expiracion sera 30 dias
+        // de lo contrario la expiracion sera en 2 horas.
         res.cookie("token", token, {
           httpOnly: !config.dev,
           secure: !config.dev,
