@@ -4,6 +4,8 @@ const boom = require('@hapi/boom');
 const cookieParser = require('cookie-parser');
 const axios = require('axios');
 
+const THIRTY_DAYS_IN_SEC = 2592000;
+const TWO_HOURS_IN_SEC = 7200;
 const { config } = require('./config');
 
 const app = express();
@@ -16,6 +18,8 @@ require('./utils/auth.js/strategies/basic');
 
 app.post("/auth/sign-in", async function(req, res, next) {
   passport.authenticate("basic", function(error, data) {
+
+    const {rememberMe} = req.body;
     try {
       if (error || !data) {
         next(boom.unauthorized());
@@ -30,7 +34,8 @@ app.post("/auth/sign-in", async function(req, res, next) {
 
         res.cookie("token", token, {
           httpOnly: !config.dev,
-          secure: !config.dev
+          secure: !config.dev,
+          maxAge: rememberMe ? THIRTY_DAYS_IN_SEC :TWO_HOURS_IN_SEC
         });
 
         res.status(200).json(user);
