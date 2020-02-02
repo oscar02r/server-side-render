@@ -14,7 +14,7 @@ const oAuth2Strategy = new OAuth2Strategy({
     tokenURL: GOOGLE_TOKEN_URL,
     clientID:config.googleClientId,
     clientSecret:config.googleClientSecret,
-    callbackURL:"/auth/google-oauth/callback"
+    callbackURL:'/auth/google-oauth/callback'
   },
   async function(accessToken, refreshToken, profile, cb){
     const {data, status} = await axios({
@@ -43,12 +43,12 @@ oAuth2Strategy.userProfile = function (accesToken, done) {
       }
       
      try {
-       const { sub, name, emial } = JSON.parse(body);
+       const { sub, name, email } = JSON.parse(body);
 
        const profile = {
               id:sub,
               name, 
-              emial
+              email
        };
        return  done(null, profile);
      } catch (parseErrro) {

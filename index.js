@@ -13,8 +13,11 @@ const app = express();
 // Body parser
 app.use(express.json());
 app.use(cookieParser());
-
+// Basic Strategy
 require('./utils/auth.js/strategies/basic');
+
+//GOOGLE OAUTH STRATEGY
+require('./utils/auth.js/strategies/oauth');
 
 app.post("/auth/sign-in", async function(req, res, next) {
   passport.authenticate("basic", function(error, data) {
@@ -211,7 +214,7 @@ app.get('/auth/google/oauth', passport.authenticate('google-oauth',{
   scope:['email', 'profile', 'openid']
 }));
 
-app.get("auth/google-oauth/callback",passport.authenticate('google-ouath',{session:false}),
+app.get('/auth/google-oauth/callback',passport.authenticate("google-oauth",{session:false}),
    function (req, res, next) {
     
     if(!req.user){
