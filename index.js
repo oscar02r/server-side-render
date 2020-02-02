@@ -19,6 +19,8 @@ require('./utils/auth.js/strategies/basic');
 //GOOGLE OAUTH STRATEGY
 require('./utils/auth.js/strategies/oauth');
 
+// Google Strategy
+require('./utils/auth.js/strategies/google');
 app.post("/auth/sign-in", async function(req, res, next) {
   passport.authenticate("basic", function(error, data) {
 
@@ -232,6 +234,8 @@ app.get('/auth/google-oauth/callback',passport.authenticate("google-oauth",{sess
      
    }
 );
+
+
 
 app.listen(config.port, function(){
     console.log(`Listening http:localhost:${config.port}`);
