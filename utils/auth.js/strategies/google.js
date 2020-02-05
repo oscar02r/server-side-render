@@ -12,14 +12,16 @@ passport.use(new GoogleStrategy(
        callbackURL: "/auth/google/callback"
     },
 
-   async function(accessToken, refreshToken, profile, cb){
+    //{ _json:profile}
+
+   async function(accessToken, refreshToken, { _json:profile}, cb){
         const {data, status} = await axios({
             url:`${config.apiUrl}/api/auth/sign-provider`,
             method:'post',
             data:{
                 name:profile.name,
                 email:profile.email,
-                password:profile.id,
+                password:profile.sub,
                 apiKeyToken: config.apiKeyToken
             }
         });
@@ -30,4 +32,4 @@ passport.use(new GoogleStrategy(
         
         return cb(null, data);
     } 
-    ));
+    ));  
