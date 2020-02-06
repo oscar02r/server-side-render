@@ -3,6 +3,7 @@ const axios = require('axios');
 const {get} = require('lodash');
 const boom = require('@hapi/boom');
 
+
 const { Strategy:TwitterStrategy } = require('passport-twitter');
 
 const { config } = require('../../../config');
@@ -19,11 +20,10 @@ async function (token, tokenSecret, profile, cb) {
         method:'post',
         data:{
             name: profile.displayName,
-            email:get(profile, 'emails.0.value', `${profile.username}@twitter.com`)
+            email:get(profile, 'emails.0.value', `${profile.username}@twitter.com`),
+            password:profile.id,
+            apiKeyToken:config.apiKeyToken
         },
-
-        password:profile.id,
-        apiKeyToken:config.apiKeyToken
     });
 
     if(!data || status !==200){
