@@ -104,6 +104,7 @@ app.post('/movie-create', async function(req, res, next){
 app.get('/movies', async function(req, res, next){
   
         const { token } = req.cookies;
+        console.log(token)
         const {data , status} = await axios({
           url:`${config.apiUrl}/api/movies`,
           method:'get',
@@ -188,6 +189,7 @@ app.delete('/movie-delete/:id', async function(req, res, next){
           try {
             const { id } = req.params;
             const {token} =  req.cookies;
+            console.log(token)
             const {data, status} =   await axios({
                    url:`${config.apiUrl}/api/movies/${id}`,
                    headers:{Authorization:`Bearer ${token}`},
