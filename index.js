@@ -39,7 +39,7 @@ require('./utils/auth.js/strategies/twitter');
 
 app.post("/auth/sign-in", async function(req, res, next) {
   passport.authenticate("basic", function(error, data) {
-
+    // Si no envio la propiedad rememberMe en el body por eso esta fallando
     const {rememberMe} = req.body;
     try {
       if (error || !data) {
@@ -54,6 +54,7 @@ app.post("/auth/sign-in", async function(req, res, next) {
         const { token, ...user } = data;
         // Si el atributo rememberMe es verdadero la expiracion sera 30 dias
         // de lo contrario la expiracion sera en 2 horas.
+        
         res.cookie("token", token, {
           httpOnly: !config.dev,
           secure: !config.dev,
@@ -102,9 +103,9 @@ app.post('/movie-create', async function(req, res, next){
 });
 
 app.get('/movies', async function(req, res, next){
-  
+       try {
         const { token } = req.cookies;
-        console.log(token)
+        
         const {data , status} = await axios({
           url:`${config.apiUrl}/api/movies`,
           method:'get',
@@ -116,6 +117,11 @@ app.get('/movies', async function(req, res, next){
         }
 
         res.status(200).json(data);
+         
+       } catch (error) {
+         next(error)
+       }
+       
 });
 
 app.get('/movie/:movieId', async function(req, res, next){
