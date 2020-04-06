@@ -8,13 +8,14 @@ const helmet = require('helmet');
 const THIRTY_DAYS_IN_SEC = 2592000;
 const TWO_HOURS_IN_SEC = 7200;
 const { config } = require('./config');
-
+const cors = require('cors');
 const app = express();
 
 // Body parser
 app.use(express.json());
 app.use(helmet());
 app.use(cookieParser());
+app.use(cors());
 // Body parser for authenticate twitter
 app.use(session({
   secret:config.sessionSecret,
@@ -37,18 +38,20 @@ require('./utils/auth.js/strategies/google');
 // Twitter strategy
 require('./utils/auth.js/strategies/twitter');
 
-app.post("/auth/sign-in", async function(req, res, next) {
+app.post("/auth/sign-in", async (req, res, next) => {
   passport.authenticate("basic", function(error, data) {
     // Si no envio la propiedad rememberMe en el body por eso esta fallando
     const {rememberMe} = req.body;
+    
     try {
-      if (error || !data) {
-        next(boom.unauthorized());
+       
+     if (error || !data ) {
+        return next(boom.unauthorized());
       }
 
-      req.login(data, { session: false }, async function(error) {
+      req.login(data, { session: false }, async (error) => { 
         if (error) {
-          next(error);
+         return next(error);
         }
 
         const { token, ...user } = data;
@@ -58,8 +61,10 @@ app.post("/auth/sign-in", async function(req, res, next) {
         res.cookie("token", token, {
           httpOnly: !config.dev,
           secure: !config.dev,
-          maxAge: rememberMe ? THIRTY_DAYS_IN_SEC :TWO_HOURS_IN_SEC
+         // maxAge: rememberMe ? THIRTY_DAYS_IN_SEC : TWO_HOURS_IN_SEC
+
         });
+   
 
         res.status(200).json(user);
       });
